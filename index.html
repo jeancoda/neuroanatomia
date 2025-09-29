@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8">
+  <title>Lobo Parietal em RA</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-super-hands-component/dist/aframe-super-hands.min.js"></script>
+
+  <!--script src="https://unpkg.com/aframe-particle-system-component/dist/aframe-particle-system-component.min.js"></script-->
+  <!--script src="https://unpkg.com/aframe-gesture-detector@1.0.3/dist/aframe-gesture-detector.min.js"></script>
+  <script src="https://unpkg.com/aframe-gesture-handler@1.0.3/dist/aframe-gesture-handler.min.js"></script-->
+  <!--meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"-->
+
+</head>
+
+<body style="margin:0; overflow:hidden;">
+  <a-scene embedded arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
+  <!--a-scene-->
+    <!-- Câmera AR -->
+     <a-marker preset="hiro">
+      <a-entity hand-controls="hand: left"></a-entity>
+      <!-- Modelo 3D do cérebro -->
+      <a-entity id="brainModel1" gltf-model="brain_parietal.glb" scale="2 2 2" rotation="0 0 0" position="0.13316 0.09561 0.01192"
+        gesture-handler grabbable
+          draggable class="clickable"></a-entity>
+      </a-marker>
+
+    <a-marker type="pattern" url="pattern-paint.patt">
+      <a-entity hand-controls="hand: left"></a-entity>
+      <!-- Modelo 3D do cérebro -->
+      <a-entity id="brainModel" gltf-model="brain.glb" scale="2 2 2" rotation="0 0 0" position="0.13316 0.09561 0.01192"
+        gesture-handler grabbable
+          draggable class="clickable"></a-entity>
+
+      <a-sphere id="hotspot-estereognosia" position="-0.55013 2.2 0" radius="0.1" color="#FF0000" grabbable
+               draggable
+               droppable class="clickable" gesture-handler></a-sphere>
+      <a-entity id="info-estereognosia" class="info" visible="false" position="-0.5 2.7 0">
+        <a-plane color="#333" width="1.5" height="0.6" opacity="0.8"></a-plane>
+        <a-text value="Estereognosia: habilidade de identificar objetos pelo tato." color="white" width="1.4"
+          align="center" position="0 0 0.01">
+        </a-text>
+      </a-entity>
+
+      <a-box id="hotspot-memoria" position="0 2.50118 -0.5" depth="0.1" height="0.1" width="0.1" color="#0000FF" grabbable
+                  draggable class="clickable"></a-box>
+      <a-entity id="info-memoria" class="info" visible="false" position="0 2.85986 -0.5">
+        <a-plane color="#333" width="1.5" height="0.6" opacity="0.8"></a-plane>
+        <a-text value="Memória espacial: lembre onde está cada objeto no espaço." color="white" width="1.4"
+          align="center" position="0 0 0.01">
+        </a-text>
+      </a-entity>
+
+
+
+
+
+
+
+
+
+
+    </a-marker>
+
+    <!-- Necessário para AR.js -->
+    <a-entity camera>
+        <a-cursor 
+            fuse="false"
+            raycaster="objects: .clickable"
+            rayOrigin="mouse" 
+            id="cursor"
+            material="color: red; shader: flat" 
+            geometry="radiusInner: 0.005; radiusOuter: 0.01">
+        </a-cursor>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    document.querySelector('#hotspot-estereognosia')
+      .addEventListener('click', () => {
+        let info = document.querySelector('#info-estereognosia');
+        info.setAttribute('visible', !info.getAttribute('visible'));
+      });
+
+     document.querySelector('#hotspot-memoria')
+      .addEventListener('click', () => {
+        let info = document.querySelector('#info-memoria');
+        info.setAttribute('visible', !info.getAttribute('visible'));
+      });
+  </script>
+</body>
+
+</html>
