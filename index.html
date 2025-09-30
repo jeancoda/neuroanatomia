@@ -19,37 +19,57 @@
   <a-scene embedded arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;">
   <!--a-scene-->
     <!-- Câmera AR -->
-     <a-marker preset="hiro">
+    <a-marker preset="hiro">
       <a-entity hand-controls="hand: left"></a-entity>
       <!-- Modelo 3D do cérebro -->
-      <a-entity id="brainModel1" gltf-model="brain_parietal.glb" scale="2 2 2" rotation="0 0 0" position="0.13316 0.09561 0.01192"
-        gesture-handler grabbable
-          draggable class="clickable"></a-entity>
-      </a-marker>
+      <a-entity id="brainModel1" gltf-model="modelos/brain.glb" scale="2 2 2" rotation="0 0 0" position="0 1 0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"
+        class="clickable">
+      </a-entity>
+    </a-marker>
 
     <a-marker type="pattern" url="pattern-paint.patt">
       <a-entity hand-controls="hand: left"></a-entity>
       <!-- Modelo 3D do cérebro -->
-      <a-entity id="brainModel" gltf-model="brain.glb" scale="2 2 2" rotation="0 0 0" position="0.13316 0.09561 0.01192"
-        gesture-handler grabbable
-          draggable class="clickable"></a-entity>
+      <a-entity id="brainModel" gltf-model="modelos/brain_parietal.glb" scale="2.5 2.5 2.5" rotation="0 0 0" position="-0.21277 1 0.36712" 
+           class="clickable">
 
-      <a-sphere id="hotspot-estereognosia" position="-0.55013 2.2 0" radius="0.1" color="#FF0000" grabbable
-               draggable
-               droppable class="clickable" gesture-handler></a-sphere>
-      <a-entity id="info-estereognosia" class="info" visible="false" position="-0.5 2.7 0">
+           <a-entity id="icon-info-estereognosia" gltf-model="modelos/info-semcor.glb" scale="0.07787 0.07787 0.07787" rotation="0 0 0" position="0.36216 1.17584 0"
+              class="clickable"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 4000; easing: linear">
+          </a-entity>
+
+          <a-entity id="icon-info-memoria" gltf-model="modelos/info-semcor.glb" scale="0.07787 0.07787 0.07787" rotation="0 0 0" position="-0.36216 1.17584 0"
+              class="clickable"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 4000; easing: linear">
+          </a-entity>
+             
+      </a-entity>
+
+      
+
+      <a-entity id="icon-help1" class="clickable"
+          geometry="primitive: circle; radius: 0.15"
+          material="color: blue"
+          position="0 2 -1"
+          rotation="0 0 0"
+          animation="property: rotation; to: 0 360 0; loop: NaN; dur: 5000; easing: linear">
+  <a-text value="?" color="white" align="center" position="0 0 0.01"></a-text>
+</a-entity>
+
+      <a-entity id="info-estereognosia" scale="1 1.01109 1" class="info" visible="false" position="0.71366 4.59018 0.36339">
         <a-plane color="#333" width="1.5" height="0.6" opacity="0.8"></a-plane>
-        <a-text value="Estereognosia: habilidade de identificar objetos pelo tato." color="white" width="1.4"
-          align="center" position="0 0 0.01">
+        <a-text value="Estereognosia: habilidade de identificar objetos pelo tato." color="white" width="1.680"
+          align="center" wrap-count="36" position="0 0 0.01">
         </a-text>
       </a-entity>
 
-      <a-box id="hotspot-memoria" position="0 2.50118 -0.5" depth="0.1" height="0.1" width="0.1" color="#0000FF" grabbable
-                  draggable class="clickable"></a-box>
-      <a-entity id="info-memoria" class="info" visible="false" position="0 2.85986 -0.5">
+      <a-box id="hotspot-memoria" position="0 2.50118 -0.5" depth="0.1" height="0.1" width="0.1" color="#0000FF" 
+                   class="clickable"></a-box>
+      <a-entity id="info-memoria" class="info" visible="false" position="-1.11133 4.57469 0.36321">
         <a-plane color="#333" width="1.5" height="0.6" opacity="0.8"></a-plane>
-        <a-text value="Memória espacial: lembre onde está cada objeto no espaço." color="white" width="1.4"
-          align="center" position="0 0 0.01">
+        <a-text value="Memória espacial: lembre onde esta cada objeto no espaco." color="white" width="1.680"
+          align="center" wrap-count="36" position="0 0 0.01">
         </a-text>
       </a-entity>
 
@@ -78,17 +98,67 @@
   </a-scene>
 
   <script>
-    document.querySelector('#hotspot-estereognosia')
-      .addEventListener('click', () => {
+      const modelInfoEstereognosia = document.querySelector('#icon-info-estereognosia');
+      let isRotating1 = true;
+
+      // Paleta de cores para alternar
+      const colors = ['red', 'blue', 'green', 'purple', 'orange'];
+      let index = 0;
+
+      modelInfoEstereognosia.addEventListener('click', () => {
+        index = (index + 1) % colors.length;
+        const object3D = modelInfoEstereognosia.getObject3D('mesh');
+
+        if (object3D) {
+          object3D.traverse(node => {
+            if (node.isMesh) {
+              node.material = new THREE.MeshStandardMaterial({ color: colors[index] });
+            }
+          });
+        }
+
         let info = document.querySelector('#info-estereognosia');
         info.setAttribute('visible', !info.getAttribute('visible'));
+
+        if (isRotating1) {
+          modelInfoEstereognosia.components.animation.pause();  // pausa a rotação
+        } else {
+          modelInfoEstereognosia.components.animation.play();   // volta a rodar
+        }
+        isRotating1 = !isRotating1; // inverte o estado
       });
 
-     document.querySelector('#hotspot-memoria')
-      .addEventListener('click', () => {
+      const modelInfoMemoria = document.querySelector('#icon-info-memoria');
+
+      // Paleta de cores para alternar
+      index = 0;
+      let isRotating2 = true;
+
+
+      modelInfoMemoria.addEventListener('click', () => {
+        index = (index + 1) % colors.length;
+        const object3D = modelInfoMemoria.getObject3D('mesh');
+        if (object3D) {
+          object3D.traverse(node => {
+            if (node.isMesh) {
+              node.material = new THREE.MeshStandardMaterial({ color: colors[index] });
+            }
+          });
+        }
+
         let info = document.querySelector('#info-memoria');
         info.setAttribute('visible', !info.getAttribute('visible'));
+
+        if (isRotating2) {
+          modelInfoMemoria.components.animation.pause();  // pausa a rotação
+        } else {
+          modelInfoMemoria.components.animation.play();   // volta a rodar
+        }
+        isRotating2 = !isRotating2; // inverte o estado
       });
+
+
+
   </script>
 </body>
 
